@@ -1,0 +1,157 @@
+
+{% extends 'base.html' %}
+
+
+{% block body %}
+<head>
+    <style>
+          thead th {
+    border: .5px solid rgba(255, 255, 255, .2); ;
+    
+    
+ }
+ .table-row{
+cursor:pointer;
+}
+.table-row:hover{
+    background-color: rgb(216, 155, 51);
+}
+.table-row1{
+cursor:pointer;
+}
+.table-row1:hover{
+    background-color: rgb(216, 155, 51);
+}    
+  
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row d-flex" style="background-color: rgb(103, 175, 220);color:#fff;width:100%;margin: auto;">
+                    <div class="col ">Stock Item Monthly Summary</div>
+                    <div class="col-4" style="font-weight:600 ;text-transform:capitalize;">{{company.name}}</div>
+                    
+                          <div class= 'col-2'><a href="javascript:history.go(-1);">
+                              <span class="pull-right clickable" data-effect="fadeOut"><i class="fa fa-times" style="color: black;"></i></span></a>
+                          </div> 
+                </div>
+                <div class="table-responsive">
+                    <table class="table " style="background-color: rgba(33,57,77,255);color:#fff;">
+
+                        <thead>
+
+                            <tr>
+                                <th rowspan="3" colspan="3" class="align-middle text-white "> <h6 class="d-flex align-items-sm-start par p-1 py-1" style="margin-left: 20px;">Particular</h6></th>
+                                
+                                <th colspan="6" class="text-center text-white " ><h6><i>{{item.name}}</i></h6>
+                                  <h6><strong> {{company.name}} </strong></h6><h6>{{beg_date}} to {{new_date}}</h6></th>
+                              </tr>
+                            
+                              <tr>
+
+                                <th colspan="2" class="text-center text-white" style="width: 20%;"><h6> <strong> Inwards </strong></h6></th>
+                                <th colspan="2" class="text-center text-white"style="width: 20%;" ><h6> <strong> Outwards </strong></h6></th>
+
+                                <th colspan="2" class="text-center text-white " style="width: 20%;"><h6> <strong> Closing Balance</strong></h6></th>
+
+                              </tr>
+                              <tr>
+                                <th class="text-center text-white">Quantity</th>
+                                <th class="text-center text-white">Value</th>
+                                <th class="text-center text-white">Quantity</th>
+                                <th class="text-center text-white">Value</th>
+                                <th class="text-center text-white">Quantity</th>
+                                <th class="text-center text-white">Value</th>
+                              </tr>
+
+                        </thead>
+                        
+                        <tbody>
+                            <tr class="table-row">
+                                <td ><i>Opening Balance</i></td>
+                                <td></td>
+                                <td></td>
+                                <td class="border-left"></td>
+                                <td></td>
+                                <td class="border-left"></td>
+                                <td></td>
+                                <td class="text-center border-left"><strong>{{item.quantity}} {{item.units}}</strong></td>
+                                
+                                <td class="text-center"><strong>{{item.value}}</strong></td>
+
+                            </tr>
+                           
+                            {% for m in months %}
+                            
+                            <tr class="table-row">
+                                
+                                <td> <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{m.month_name}}</a> </td>
+                               
+                                <td class="text-center"></td>
+                                <td class="text-center"></td>
+                                {% if m.total_inqty is not None %}
+                                <td class="text-center border-left">
+                                    <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{ m.total_inqty }} {{item.units}}</a></td>
+                                <td class="text-center">
+                                    <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{ m.total_inval }}</a></td>
+                                {% else %}
+                                <td class="text-center border-left"><a href="{% url 'stock_item_vouchers' item.id m.id %}"></a></td>
+                                <td class="text-center"><a href="{% url 'stock_item_vouchers' item.id m.id %}"></a></td>
+                                {% endif %}
+
+                                {% if m.total_outqty is not None %}
+                                <td class="text-center border-left">
+                                    <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{ m.total_outqty }} {{item.units}}</a></td>
+                                <td class="text-center">
+                                    <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{ m.total_outval }}</a></td>
+                                {% else %}
+                                <td class="text-center border-left"><a href="{% url 'stock_item_vouchers' item.id m.id %}"></a></td>
+                                <td class="text-center"><a href="{% url 'stock_item_vouchers' item.id m.id %}"></a></td>
+                                {% endif %}
+
+                                {% if m.total_qty is not None %}
+                                <td class="text-center border-left">
+                                    <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{ m.total_qty }} {{item.units}}</a></td>
+                                <td class="text-center">
+                                    <a href="{% url 'stock_item_vouchers' item.id m.id %}">{{ m.total_val }}</a></td>
+                                {% else %}
+                                <td class="text-center border-left"><a href="{% url 'stock_item_vouchers' item.id m.id %}"></a></td>
+                                <td class="text-center"><a href="{% url 'stock_item_vouchers' item.id m.id %}"></a></td>
+                                {% endif %}
+    
+                            </tr>
+                       
+                            {% endfor %}
+                            
+
+                            <tr class="table-row">
+                                <th  ><h6 class="d-flex align-items-sm-start par p-1 py-1 foot" style="margin-left: 20px;">Grand Total</h6></th>
+                                
+                                <th  style="text-align: center;"></th>
+                                <th  style="text-align: center;"></th>
+                                <th  style="text-align: center;" class="border-left">{{sum_in_qty}} {{item.units}}</th>
+                                <th style="text-align:center;"> {{sum_in_val}}</th>
+                                <th style="text-align:center;" class="border-left">{{sum_out_qty}} {{item.units}}</th>
+                                <th style="text-align:center;">{{sum_out_val}}</th>
+                               
+                                <th style="text-align:center;" class="border-left"> {{tot_qty}} {{item.units}}</th>
+                                <th style="text-align: center;">{{tot_val}}</th>
+                                
+                                
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+{% endblock %}

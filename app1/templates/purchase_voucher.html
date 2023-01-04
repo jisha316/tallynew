@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+    {% block body %}
+    {% load static %}
+    <style>
+        .enter{
+            display: flex;
+            align-items: center;
+            justify-content: center;   
+        }  
+        .hide{
+			display: none;
+    	}
+        .close {
+            position: absolute;
+            top: 3px;
+            right: 8px;
+            font-size: 17px;
+            transform: rotate(0deg);
+            color: rgb(255, 255, 255);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 150px;
+            right: 15px;
+            border: 1px solid #f1f1f1;
+            z-index: 9;
+            width: 300px;
+            height: 550px;
+        }
+        .content a:hover {
+            background-color: rgb(238, 167, 75);
+        }
+        .form-container {
+            max-width: 50px;
+            height: 500px;
+            padding: 10px;
+        }
+        .form-container1 {
+            max-width: 350px;
+            height: 600px;
+            padding: 2px; 
+        }
+        .bt{
+            text-align: end;
+        }
+        .btns_prnt{
+            width: 100%;
+            cursor:pointer;
+            background-color: rgba(240, 248, 255, 0);
+            border: none;
+        }
+        .btns_prnt:hover{
+            background-color:#5bc9e4;
+            color: rgb(15, 14, 14);
+        } 
+        .ScrollStyle{
+            /* max-height: 200px; */
+            overflow-y: scroll;
+        }  
+    </style>
+
+    <div class="m-3">
+        <div class="row bg-info text-light p-2 m-0">
+            <div class="col-md-6">Accounting Voucher Creation</div>
+            <center>
+                {% for i in tally %}
+                    {{i.name}}
+                {% endfor %}
+            </center>
+        </div>
+        <form class="p-2" style="background-color:rgba(0,0,0,.4);" method="post" action="{% url 'create_ROE' %}" autocomplete="off">
+            {% csrf_token %}
+            <div class="p-3">
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-1 m-0 p-0" style="background-color: rgba(0,0,0,.4);">
+                        <center><label >Purchase</label></center>
+                    </div>
+                    <div class="col-sm-1 m-0 p-0"></div>
+                    <div class="col-sm-3 m-0 p-0">
+                        No.
+                    </div>
+                    <div class="col-sm-7 m-0 p-0"></div>
+                </div>
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-2 m-0 p-0">
+                        <label>Supplier Invoice No.</label>
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="col-sm-1 m-0 p-0"></div>
+                    <div class="col-sm-1 m-0 p-0">
+                        <label>Date</label>
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <input type="date" id="date" class="form-control">
+                    </div>
+                </div>
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-2 m-0 p-0">
+                        <label>Party A/C Name</label>
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <input type="text" class="form-control" id="under1" onclick="showgroup1();"
+                        data-toggle="modal" data-target="#details">
+                    </div>
+                </div>
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-2 m-0 p-0">
+                        <label>Purchase Ledger</label>
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <input type="text" class="form-control" id="under" onclick="showgroup();">
+                    </div>
+                </div>
+                <div class="table-responsive-sm">
+                    <table class="w-100 table text-center" border="1">
+                        <thead>
+                            <tr>
+                                <th>Name of Item</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Per</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="form-control"></td>
+                                <td><input type="text" class="form-control"></td>
+                                <td><input type="text" class="form-control"></td>
+                                <td><input type="text" class="form-control"></td>
+                                <td><input type="text" class="form-control"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+               </div>  
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-2 m-0 p-0"><label>Naration</label></div>
+                </div>
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-6 m-0 p-0"><textarea class="form-control" rows="1"></textarea>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $('#date').val(new Date().toJSON().slice(0,10));
+    </script>
+
+    <div class="form-popup ScrollStyle" id="myForm" style="background-color: #213b52">
+        <form action="" class="form-container1" >
+            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ldger Account</h6>
+            <button type="button" class="btn cancel close" onclick="closeForm()">X</button>
+            <a href="{% url 'ledgers' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
+            <hr>
+            <div>
+                <table>
+                    <tr>
+                        {% for i in pl %}
+                            <option onclick="setGroup('{{i.name}}','{{i.id}}')" class="btns_prnt">{{i.name}}</option>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+            <input type="text" name="underhidden" hidden value="{{i.id}}">
+        </form>
+    </div>
+
+    <div class="form-popup ScrollStyle" id="myForm1" style="background-color: #213b52">
+        <form action="" class="form-container1" >
+            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ldger Account</h6>
+            <button type="button" class="btn cancel close" onclick="closeForm1()">X</button>
+            <a href="{% url 'ledgers' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
+            <hr>
+            <div>
+                <table>
+                    <tr data-toggle="modal" data-id="1" data-target="#details">
+                        {% for i in ac1 %}
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt">{{i.name}}</option>
+                        {% endfor %}
+                        {% for i in ac2 %}
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt">{{i.name}}</option>
+                        {% endfor %}
+                        {% for i in ac3 %}
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt">{{i.name}}</option>
+                        {% endfor %}
+                        {% for i in ac4 %}
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt">{{i.name}}</option>
+                        {% endfor %}
+                        {% for i in ac5 %}
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt">{{i.name}}</option>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+            <input type="text" name="underhidden1" hidden value="{{i.id}}">
+        </form>
+    </div>
+
+    <script>
+        $(function(){
+            $('#details').modal({
+                keyboard: true,
+                backdrop: "static",
+                show:false,
+
+            }).on('show', function(){
+                var getIdFromRow = $(event.target).closest('tr').data('id');
+                $(this).find('#dt').html($('<b> Order Id selected: ' + getIdFromRow  + '</b>'))
+            });
+        });
+    </script>
+
+    <script>
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+        function showgroup(){
+            document.getElementById('myForm').style.visibility= "visible";
+            document.getElementById("myForm").style.display = "block";
+        }
+        function setGroup(under,underId){
+                document.getElementById('under').value= under;
+                document.getElementById('myForm').style.visibility= "block";
+                document.getElementsByName('underhidden').value= underId;
+            }
+    </script>
+    <script>
+        function closeForm1() {
+            document.getElementById("myForm1").style.display = "none";
+        }
+        function showgroup1(){
+            document.getElementById('myForm1').style.visibility= "visible";
+            document.getElementById("myForm1").style.display = "block";
+        }
+        function setGroup1(under1,underId1){
+                document.getElementById('under1').value= under1;
+                document.getElementById('myForm1').style.visibility= "block";
+                document.getElementsByName('underhidden1').value= underId;
+            }
+    </script>
+
+<div class="modal fade" id="details">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: #213b52;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="dt" class="modal-body">
+                <div class="card p-3 m-3">
+                    <form method="post" action="{% url 'ledgers' %}">
+                        {% csrf_token %}
+                        <div class="row container-fluid  p-2 m-0">
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Receipt Note No.</label>
+                            </div>
+                            <div class="col-sm-2 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                            <div class="col-sm-1 m-0 p-0"></div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Receipt Doc No.</label>
+                            </div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row container-fluid  p-2 m-0">
+                            <div class="col-sm-3 m-0 p-0"></div>
+                            <div class="col-sm-2 m-0 p-0"></div>
+                            <div class="col-sm-1 m-0 p-0"></div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Dispatched Through</label>
+                            </div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row container-fluid  p-2 m-0">
+                            <div class="col-sm-3 m-0 p-0"></div>
+                            <div class="col-sm-2 m-0 p-0"></div>
+                            <div class="col-sm-1 m-0 p-0"></div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Destination</label>
+                            </div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row container-fluid  p-2 m-0">
+                            <div class="col-sm-3 m-0 p-0"></div>
+                            <div class="col-sm-2 m-0 p-0"></div>
+                            <div class="col-sm-1 m-0 p-0"></div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Carrier Name</label>
+                            </div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row container-fluid  p-2 m-0">
+                            <div class="col-sm-3 m-0 p-0"></div>
+                            <div class="col-sm-2 m-0 p-0"></div>
+                            <div class="col-sm-1 m-0 p-0"></div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Bill of lading</label>
+                            </div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row container-fluid  p-2 m-0">
+                            <div class="col-sm-3 m-0 p-0"></div>
+                            <div class="col-sm-2 m-0 p-0"></div>
+                            <div class="col-sm-1 m-0 p-0"></div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <label>Motor Vehicle No.</label>
+                            </div>
+                            <div class="col-sm-3 m-0 p-0">
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="mt-3">
+                            <div class="row">
+                                <div class="col-md-5"></div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-outline-info">Save and
+                                        close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
