@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+    {% block body %}
+    {% load static %}
+    <style>
+        .card {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          max-width: 300px;
+          margin: auto;
+          text-align: right;
+          font-family: arial;
+        }
+        .modal-body{
+            color: #fff;
+            background-color: #213b52;
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+            font-family: arial;
+        }
+        .modal-content{
+            margin-top: 250px;
+            background-color: #213b52;
+        }
+        a{
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+        .btns{
+            color: black;
+            text-decoration: none;
+        }
+        .btns_prnt{
+            width: 100%;
+            cursor:pointer;
+            background-color: rgba(240, 248, 255, 0);
+            border: none;
+        }
+        .btns_prnt:hover{
+            background-color:#5bc9e4;
+            color: rgb(15, 14, 14);
+        }
+    </style> 
+    
+    <div class="m2">
+        <form class="p-2">
+            <div class="p-3">
+                <div class="card">
+                    <h6  class="bg-info text-light p-0 m-0 text-left">List Of Types</h6><br>
+                    <h6  class="text-light p-1 m-0 text-end btns_prnt"><a href="{% url 'vouchers' %}" class="">Create</a></h6>
+                    <hr>
+                    <table>
+                        {% for i in vt %}
+                            <tr>
+                                <h6 class="text-light p-1 m-0 text-center btns_prnt"><a href="{% url 'purchase_voucher1' i.id %}">{{ i.voucher_name }}</a></h6>
+                            </tr>
+                        {% endfor %}
+         
+                        <tr class="btns_prnt">
+                            <h6  class="text-light p-1 m-0 text-center btns_prnt"><a href="{% url 'purchase_voucher' %}" class="">Purchase</a></h6>
+                        </tr>
+                    </table>  
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                </div>   
+            </div>   
+        </form>
+    </div>  
+
+{% endblock %}

@@ -677,7 +677,13 @@ urlpatterns = [
     path('stock_ageing_primary',views.stock_ageing_primary,name = 'stock_ageing_primary'),
 
 
+    path('list_pv',views.list_pv,name = 'list_pv'),
     path('purchase_voucher',views.purchase_voucher,name = 'purchase_voucher'),
+    path('purchase_voucher1/<int:pk>',views.purchase_voucher1,name = 'purchase_voucher1'),
+    path('pv_receipt',views.pv_receipt,name = 'pv_receipt'),
+    path('pv_party',views.pv_party,name = 'pv_party'),
+    path('pv_receipt1/<int:pk>',views.pv_receipt1,name = 'pv_receipt1'),
+    path('pv_party1/<int:pk>',views.pv_party1,name = 'pv_party1'),
     
     
     path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),

@@ -5469,7 +5469,7 @@ def stock_items_creation(request):
             
                      
             crt=stock_itemcreation(name=nm,alias=alias,under=under,units=units,batches=batches,trackdate=trackdate,expirydate=expirydate,typ_sply=typ_sply,
-            gst_applicable=gst_applicable,set_alter=set_alter,rate_of_duty=rate_of_duty,quantity=quantity,rate=rate,per=per,value=value)#,group=i )
+            gst_applicable=gst_applicable,set_alter=set_alter,rate_of_duty=rate_of_duty,quantity=quantity,rate=rate,per=per,value=value,company_id=t_id)#,group=i )
             crt.save()
             
             
@@ -5586,7 +5586,7 @@ def godown(request):
             name=request.POST['name']
             alias=request.POST['alias']
             under_name=request.POST['under_name']
-            gdcrt=CreateGodown(name=name,alias=alias,under_name=under_name)
+            gdcrt=CreateGodown(name=name,alias=alias,under_name=under_name,comp_id=t_id)
             gdcrt.save()
             return redirect('godown')
         return render(request,'godown.html',{'gd':gd,'tally':tally})
@@ -10970,6 +10970,36 @@ def item_inwards(request,pk,d1,d2):
         return render(request,'item_inwards_details.html',context)
 
 
+def list_pv(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        vt = Voucher.objects.filter(company=t_id,voucher_type='Purchase')
+        context = {'tally':tally,'vt':vt}
+        return render(request,'list_pv.html',context)
+    return redirect('list_pv')
+
+def purchase_voucher1(request,pk):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        vouch=Voucher.objects.get(id=pk)
+        pl=tally_ledger.objects.filter(company=t_id,under='Purchase_Account')
+        ac1=tally_ledger.objects.filter(company=t_id,under='Bank_Accounts')
+        ac2=tally_ledger.objects.filter(company=t_id,under='Cash_in_Hand')
+        ac3=tally_ledger.objects.filter(company=t_id,under='Sundry_Creditors')
+        ac4=tally_ledger.objects.filter(company=t_id,under='Sundry_Debtors')
+        ac5=tally_ledger.objects.filter(company=t_id,under='Branch_Divisions')
+        context = {'tally':tally,'v':vouch,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5}
+        return render(request,'purchase_voucher1.html',context)
+    return redirect('purchase_voucher1')
+
 def purchase_voucher(request):
     if 't_id' in request.session:
         if request.session.has_key('t_id'):
@@ -10983,6 +11013,104 @@ def purchase_voucher(request):
         ac3=tally_ledger.objects.filter(company=t_id,under='Sundry_Creditors')
         ac4=tally_ledger.objects.filter(company=t_id,under='Sundry_Debtors')
         ac5=tally_ledger.objects.filter(company=t_id,under='Branch_Divisions')
-        context = {'tally':tally,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5}
+        st=stock_itemcreation.objects.filter(company=t_id)
+        gd=CreateGodown.objects.filter(comp=t_id)
+        context = {'tally':tally,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5,'st':st,'gd':gd}
         return render(request,'purchase_voucher.html',context)
     return redirect('purchase_voucher')
+
+def pv_receipt(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        if request.method == "POST":
+
+            rec = purchase_voucher_receipt(date=request.POST['date'], note_no=request.POST['note_no'],
+                doc_no=request.POST['doc_no'], dispatch=request.POST['dispatch'], destination=request.POST['destination'], 
+                carrier=request.POST['carrier'], lading=request.POST['lading'], veh_no=request.POST['veh_no'], company_id=t_id)
+            rec.save()
+            
+            print("added")
+            return redirect('pv_receipt')
+        return render(request,'purchase_voucher.html',{'tally':tally})
+    return redirect('/')
+
+def pv_party(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        if request.method == "POST":
+
+            pty = purchase_voucher_party(supplier=request.POST['supplier'], mailing_name=request.POST['mailing_name'],
+                address=request.POST['address'], state=request.POST['state'], country=request.POST['country'], 
+                gst_regtype=request.POST['gst_regtype'], gstin=request.POST['gstin'], company_id=t_id)
+            pty.save()
+
+            print("added")
+            return redirect('purchase_voucher')
+        return render(request,'purchase_voucher.html',{'tally':tally})
+    return redirect('/')
+
+def pv_receipt1(request,pk):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        vouch=Voucher.objects.get(id=pk)
+        if request.method == "POST":
+
+            rec = purchase_voucher_receipt(date=request.POST['date'], note_no=request.POST['note_no'],
+                doc_no=request.POST['doc_no'], dispatch=request.POST['dispatch'], destination=request.POST['destination'], 
+                carrier=request.POST['carrier'], lading=request.POST['lading'], veh_no=request.POST['veh_no'], company_id=t_id)
+            rec.save()
+            
+            print("added")
+            return redirect('purchase_voucher1',pk)
+        return render(request,'purchase_voucher1.html',{'tally':tally,'v':vouch})
+    return redirect('/')
+
+def pv_party1(request,pk):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        vouch=Voucher.objects.get(id=pk)
+        if request.method == "POST":
+
+            pty = purchase_voucher_party(supplier=request.POST['supplier'], mailing_name=request.POST['mailing_name'],
+                address=request.POST['address'], state=request.POST['state'], country=request.POST['country'], 
+                gst_regtype=request.POST['gst_regtype'], gstin=request.POST['gstin'], company_id=t_id)
+            pty.save()
+
+            print("added")
+            return redirect('purchase_voucher1',pk)
+        return render(request,'purchase_voucher1.html',{'tally':tally,'v':vouch})
+    return redirect('/')
+
+# def itemdata(request):
+#     if 't_id' in request.session:
+#         if request.session.has_key('t_id'):
+#             t_id = request.session['t_id']
+#         else:
+#             return redirect('/')
+#         tally = Companies.objects.filter(id=t_id)
+#         id = request.GET.get('id')
+
+#         item = stock_itemcreation.objects.get(name=id,company_id=t_id)
+#         print(item)
+#         q = item.quantity
+#         r = item.rate
+#         p = item.per
+#         v = item.value
+#         return JsonResponse({"status":" not",'q':q,'r':r,'p':p,'v':v})
+#     return redirect('/')

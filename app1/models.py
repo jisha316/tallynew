@@ -650,7 +650,8 @@ class stockgroupcreation(models.Model):
     quantities=models.CharField(max_length=100)
 
 class stock_itemcreation(models.Model):
-    under=models.ForeignKey(Companies,on_delete=models.CASCADE,blank=True,null=True,default=0)
+    company=models.ForeignKey(Companies,on_delete=models.CASCADE,blank=True,null=True)
+    under=models.CharField(max_length=100,null=True,default=0)
     name=models.CharField(max_length=100,null=True,default=0)
     alias=models.CharField(max_length=100,null=True,default=0)
     
@@ -1688,10 +1689,23 @@ class stock_item_voucher(models.Model):
     closing_qty = models.IntegerField(null = True,blank=True)
     closing_val = models.IntegerField(null = True,blank=True)
 
+class purchase_voucher_receipt(models.Model):
+    company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
+    date = models.CharField(max_length=150,null = True)
+    note_no = models.CharField(max_length = 50,null = True)
+    doc_no = models.CharField(max_length = 50,null = True)
+    dispatch = models.CharField(max_length = 200,null = True)
+    destination = models.CharField(max_length = 200,null = True)
+    carrier = models.CharField(max_length = 200,null = True)
+    lading = models.CharField(max_length = 200,null = True)
+    veh_no = models.CharField(max_length = 200,null = True)
 
-
-
-
-
-    
-
+class purchase_voucher_party(models.Model):
+    company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
+    supplier = models.CharField(max_length = 200,null = True)
+    mailing_name = models.CharField(max_length = 200,null = True)
+    address = models.TextField(null = True)
+    state = models.CharField(max_length = 200,null = True)
+    country = models.CharField(max_length = 200,null = True)
+    gst_regtype = models.CharField(max_length = 200,null = True)
+    gstin = models.CharField(max_length = 200,null = True)

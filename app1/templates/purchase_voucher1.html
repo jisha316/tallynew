@@ -76,7 +76,7 @@
             <div class="p-3">
                 <div class="row container-fluid  p-2 m-0">
                     <div class="col-sm-1 m-0 p-0" style="background-color: rgba(0,0,0,.4);">
-                        <center><label >Purchase</label></center>
+                        <center><label>{{v.voucher_name}}</label></center>
                     </div>
                     <div class="col-sm-1 m-0 p-0"></div>
                     <div class="col-sm-3 m-0 p-0">
@@ -129,7 +129,7 @@
                         
                         <tbody>
                             <tr>
-                                <td><input type="text" class="form-control" id="under2" onclick="showGroup2();"></td>
+                                <td><input type="text" class="form-control"></td>
                                 <td><input type="text" class="form-control"></td>
                                 <td><input type="text" class="form-control"></td>
                                 <td><input type="text" class="form-control"></td>
@@ -216,27 +216,6 @@
         </form>
     </div>
 
-    <div class="form-popup ScrollStyle" id="myForm2" style="background-color: #213b52">
-        <form action="" class="form-container1" >
-            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Stock Items</h6>
-            <button type="button" class="btn cancel close" onclick="closeForm2()">X</button>
-            <a href="{% url 'load_stock_item_creation' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
-            <hr>
-            <div>
-                <table>
-                    <tr>
-                        {% for i in st %}
-                            <option onclick="setGroup2('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#stock">
-                                {{i.name}}
-                            </option>
-                        {% endfor %}
-                    </tr>
-                </table>
-            </div>
-            <input type="text" name="underhidden2" hidden value="{{i.id}}">
-        </form>
-    </div>
-
     <script>
         function closeForm() {
             document.getElementById("myForm").style.display = "none";
@@ -265,20 +244,6 @@
             document.getElementsByName('underhidden1').value= underId;
         }
     </script>
-    <script>
-        function closeForm2() {
-            document.getElementById("myForm2").style.display = "none";
-        }
-        function showGroup2(){
-            document.getElementById('myForm2').style.visibility= "visible";
-            document.getElementById("myForm2").style.display = "block";
-        }
-        function setGroup2(under2,underId2){
-            document.getElementById('under2').value= under2;
-            document.getElementById('myForm2').style.visibility="hidden";
-            document.getElementsByName('underhidden2').value= underId;
-        }
-    </script>
 
     <div class="modal fade" id="party">
         <div class="modal-dialog modal-md">
@@ -287,7 +252,7 @@
                     <h6>Party Details</h6>
                 </div>
                 <div id="dt" class="modal-body">
-                    <form class="p-0" style="background-color:rgba(0,0,0,.4);" method="post" action="{% url 'pv_party' %}" autocomplete="off">
+                    <form class="p-0" style="background-color:rgba(0,0,0,.4);" method="post" action="{% url 'pv_party1' v.pk %}" autocomplete="off">
                         {% csrf_token %}  
                         <div class="row container-fluid p-2">
                             <div class="col-sm-1"></div>
@@ -452,7 +417,7 @@
                 </div>
                 <div id="dt" class="modal-body">
                     <div class="card p-3 m-3">
-                        <form method="post" action="{% url 'pv_receipt' %}" autocomplete="off">
+                        <form method="post" action="{% url 'pv_receipt1' v.pk %}" autocomplete="off">
                             {% csrf_token %}
                             <div class="row container-fluid  p-2 m-0">
                                 <div class="col-sm-2 m-0 p-0">
@@ -544,6 +509,7 @@
                                 </div>
                             </div>
                             
+                            
                             <div class="mt-3">
                                 <div class="row">
                                     <div class="col-md-9"></div>
@@ -560,57 +526,4 @@
         </div>
     </div>
 
-    <div class="modal fade" id="stock">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content" style="background-color: #213b52;">
-                <div class="modal-header">
-                    <h6>Item Allocation</h6>
-                </div>
-                <div id="dt" class="modal-body">
-                    <div class="card p-3 m-3">
-                        <form method="post" action="{% url 'pv_receipt' %}" autocomplete="off">
-                            {% csrf_token %}
-                            <div class="table-responsive-sm" style="background-color:rgba(0,0,0,0.4);">
-                                <Table class="w-100 table text-center" border="1">
-                                    <thead>
-                                        <tr>
-                                            <th>Godown</th>
-                                            <th>Quantity</th>
-                                            <th>Rate</th>
-                                            <th>Per</th>
-                                            <th>Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <select name="" id="" class="custom-select">
-                                                    <option value=""></option>
-                                                    {% for i in gd %}
-                                                        <option value="{{i.name}}">{{i.name}}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                        </tr>
-                                    </tbody>
-                                </Table>
-                            </div>
-                            <div class="mt-3">
-                                <div class="row">
-                                    <div class="col-md-9"></div>
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-1"><button type="submit" class="btn btn-outline-info">Accept</button></div> 
-                                </div>
-                            </div><br>    
-                        </form>
-                    </div>    
-                </div>
-            </div>    
-        </div>
-    </div>
-  
 {% endblock %}
