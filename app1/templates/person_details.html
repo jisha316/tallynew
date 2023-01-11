@@ -16,10 +16,7 @@
     <h6 class="bg-info text-light p-2 m-0 text-center">Person Resposible Details</h6>
             <form class="p-5" style="background-color:rgba(0,0,0,.4);" method="post" action="{% url 'add_person' comp.id %}">
                 
-                {% csrf_token %}
-                
-                    
-                   
+                {% csrf_token %}   
                 <div class="row container-fluid  p-0 m-3" style=" border: 1px solid rgba(128, 128, 128, 0.6);">
                     <div class="col-sm-12 m-6 p-4" style=" border-right: 1px solid rgba(128, 128, 128, 0.6);">
                        

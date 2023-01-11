@@ -71,7 +71,7 @@
                 {% endfor %}
             </center>
         </div>
-        <form class="p-2" style="background-color:rgba(0,0,0,.4);" method="post" action="{% url 'create_ROE' %}" autocomplete="off">
+        <form class="p-2" style="background-color:rgba(0,0,0,.4);" method="post" action="{% url 'create_purchasevoucher' %}" autocomplete="off">
             {% csrf_token %}
             <div class="p-3">
                 <div class="row container-fluid  p-2 m-0">
@@ -89,14 +89,14 @@
                         <label>Supplier Invoice No.</label>
                     </div>
                     <div class="col-sm-2 m-0 p-0">
-                        <input type="text" class="form-control">
+                        <input type="text" name="invoice_no" class="form-control">
                     </div>
                     <div class="col-sm-1 m-0 p-0"></div>
                     <div class="col-sm-1 m-0 p-0">
                         <label>Date</label>
                     </div>
                     <div class="col-sm-2 m-0 p-0">
-                        <input type="date" id="date" class="form-control">
+                        <input type="date" name="date" id="date" class="form-control">
                     </div>
                 </div>
                 <div class="row container-fluid  p-2 m-0">
@@ -104,7 +104,7 @@
                         <label>Party A/C Name</label>
                     </div>
                     <div class="col-sm-2 m-0 p-0">
-                        <input type="text" class="form-control" id="under1" onclick="showGroup1();">
+                        <input type="text" class="form-control" name="party_accname" id="under1" onclick="showGroup1();">
                     </div>
                 </div>
                 <div class="row container-fluid  p-2 m-0">
@@ -112,7 +112,7 @@
                         <label>Purchase Ledger</label>
                     </div>
                     <div class="col-sm-2 m-0 p-0">
-                        <input type="text" class="form-control" id="under" onclick="showGroup();">
+                        <input type="text" class="form-control" name="purchase_ledger" id="under" onclick="showGroup();">
                     </div>
                 </div>
                 <div class="table-responsive-sm">
@@ -125,28 +125,27 @@
                                 <th>Per</th>
                                 <th>Amount</th>
                             </tr>
-                        </thead>
-                        
+                        </thead>  
                         <tbody>
                             <tr>
-                                <td><input type="text" class="form-control" id="under2" onclick="showGroup2();"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
-                                <td><input type="text" class="form-control"></td>
+                                <td><input type="text" class="form-control" name="item_name" id="under2" onclick="showGroup2();"></td>
+                                <td><input type="text" class="form-control" name="quantity" id="qty"></td>
+                                <td><input type="text" class="form-control" name="rate" id="rate1"></td>
+                                <td><input type="text" class="form-control" name="per" id="per1"></td>
+                                <td><input type="text" class="form-control" name="amount" id="amount1"></td>
                             </tr>
                         </tbody>
                     </table>
-               </div>  
+                </div>  
                 <div class="row container-fluid  p-2 m-0">
                     <div class="col-sm-2 m-0 p-0"><label>Naration</label></div>
                 </div>
                 <div class="row container-fluid  p-2 m-0">
-                    <div class="col-sm-6 m-0 p-0"><textarea class="form-control" rows="1"></textarea>
+                    <div class="col-sm-6 m-0 p-0"><textarea class="form-control" rows="1" name="narration"></textarea>
                 </div>
             </div>
-            </div>
         </form>
+        <div class="enter w-100 py-4"><button type="submit" class="btn btn-info w-15">CREATE</button></div>   
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -155,7 +154,7 @@
     </script>
 
     <div class="form-popup ScrollStyle" id="myForm" style="background-color: #213b52">
-        <form action="" class="form-container1" >
+        <form action="" class="form-container1">
             <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ldger Account</h6>
             <button type="button" class="btn cancel close" onclick="closeForm()">X</button>
             <a href="{% url 'ledgers' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
@@ -226,7 +225,7 @@
                 <table>
                     <tr>
                         {% for i in st %}
-                            <option onclick="setGroup2('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#stock">
+                            <option onclick="setGroup2('{{i.name}}','{{i.id}}')" id="itm" class="btns_prnt" data-toggle="modal" data-target="#stock">
                                 {{i.name}}
                             </option>
                         {% endfor %}
@@ -568,7 +567,7 @@
                 </div>
                 <div id="dt" class="modal-body">
                     <div class="card p-3 m-3">
-                        <form method="post" action="{% url 'pv_receipt' %}" autocomplete="off">
+                        <form method="post" action="{% url 'pv_item' %}" autocomplete="off">
                             {% csrf_token %}
                             <div class="table-responsive-sm" style="background-color:rgba(0,0,0,0.4);">
                                 <Table class="w-100 table text-center" border="1">
@@ -584,17 +583,17 @@
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <select name="" id="" class="custom-select">
+                                                <select name="godown" id="product" class="custom-select">
                                                     <option value=""></option>
                                                     {% for i in gd %}
                                                         <option value="{{i.name}}">{{i.name}}</option>
                                                     {% endfor %}
                                                 </select>
                                             </td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
-                                            <td><input type="text" name="" id="" class="form-control"></td>
+                                            <td><input type="text" name="quantity" id="quantity" class="form-control" onchange="passqty()"></td>
+                                            <td><input type="text" name="rate" id="rate" class="form-control" onchange="passrate()"></td>
+                                            <td><input type="text" name="per" id="per" class="form-control" onchange="passper()"></td>
+                                            <td><input type="text" name="amount" id="amount" class="form-control" onchange="passamt()"></td>
                                         </tr>
                                     </tbody>
                                 </Table>
@@ -612,5 +611,67 @@
             </div>    
         </div>
     </div>
+
+    <script>
+        $('#quantity, #rate').on('input',function(){
+            var quantity = parseFloat($('#quantity').val()) || 0;
+            var rate = parseFloat($('#rate').val()) || 0;
+            $('#amount').val(quantity * rate);    
+        });
+
+        $('#qty, #rate1').on('input',function(){
+            var qty = parseFloat($('#qty').val()) || 0;
+            var rate1 = parseFloat($('#rate1').val()) || 0;
+            $('#amount1').val(qty * rate1);    
+        });
+    </script>
+    <script>
+        function passqty(){      
+            var quantity = document.getElementById("quantity");
+            var qty = quantity.value;
+            document.getElementById("qty").value= qty;
+        }
+        function passrate(){      
+            var rate = document.getElementById("rate");
+            var rate1 = rate.value;
+            document.getElementById("rate1").value= rate1;
+        }
+        function passper(){      
+            var per = document.getElementById("per");
+            var per1 = per.value;
+            document.getElementById("per1").value= per1;
+        }
+        function passamt(){      
+            var amount = document.getElementById("amount");
+            var amount1 = amount.value;
+            document.getElementById("amount1").value= amount1;
+        }
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $(document).on('click','#itm',function(){
+                select = $('#itm').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'itemdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        data2 = response.p
+                        data3 = response.v
+                        document.getElementById('quantity').value = data
+                        document.getElementById('rate').value = data1;
+                        document.getElementById('per').value = data2
+                        document.getElementById('amount').value=data3
+                    }
+                });
+            });     
+        });
+    </script>
   
 {% endblock %}

@@ -10989,7 +10989,7 @@ def purchase_voucher1(request,pk):
         else:
             return redirect('/')
         tally = Companies.objects.filter(id=t_id)
-        vouch=Voucher.objects.get(id=pk)
+        vouch=Voucher.objects.get(id=pk,company=t_id)
         pl=tally_ledger.objects.filter(company=t_id,under='Purchase_Account')
         ac1=tally_ledger.objects.filter(company=t_id,under='Bank_Accounts')
         ac2=tally_ledger.objects.filter(company=t_id,under='Cash_in_Hand')
@@ -11097,20 +11097,66 @@ def pv_party1(request,pk):
         return render(request,'purchase_voucher1.html',{'tally':tally,'v':vouch})
     return redirect('/')
 
-# def itemdata(request):
-#     if 't_id' in request.session:
-#         if request.session.has_key('t_id'):
-#             t_id = request.session['t_id']
-#         else:
-#             return redirect('/')
-#         tally = Companies.objects.filter(id=t_id)
-#         id = request.GET.get('id')
+def pv_item(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        if request.method == "POST":
+            pty = purchase_voucher_item(godown=request.POST['godown'], quantity=request.POST['quantity'],
+                rate=request.POST['rate'], per=request.POST['per'], amount=request.POST['amount'], 
+                company_id=t_id)
+            pty.save()
+            return redirect('purchase_voucher')
+        return render(request,'purchase_voucher.html',{'tally':tally})
+    return redirect('/')
 
-#         item = stock_itemcreation.objects.get(name=id,company_id=t_id)
-#         print(item)
-#         q = item.quantity
-#         r = item.rate
-#         p = item.per
-#         v = item.value
-#         return JsonResponse({"status":" not",'q':q,'r':r,'p':p,'v':v})
-#     return redirect('/')
+def create_purchasevoucher(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        
+        if request.method=="POST":
+            invoice_no=request.POST['invoice_no']
+            party_accname=request.POST['party_accname']
+            purchase_ledger=request.POST['purchase_ledger']
+            date=request.POST['date']
+            item_name=request.POST['item_name']
+            quantity=request.POST['quantity']
+            rate=request.POST['rate']
+            per=request.POST['per']
+            amount=request.POST['amount']
+            # total=request.POST['total']
+            narration=request.POST['narration']
+
+            pv1 = purchasevoucher(invoice_no=invoice_no, party_accname=party_accname, purchase_ledger=purchase_ledger, item_name=item_name,
+                date=date, quantity=quantity, rate=rate, per=per, amount=amount, narration=narration, company_id=t_id
+            )
+            pv1.save()
+            return redirect("purchase_voucher")
+        return render(request,'purchase_voucher.html',{'tally':tally})
+    return redirect('/')
+
+
+def itemdata(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        id = request.GET.get('id')
+
+        item = stock_itemcreation.objects.get(name=id,company_id=t_id)
+        print(item)
+        q = item.quantity
+        r = item.rate
+        p = item.per
+        v = item.value
+        return JsonResponse({"status":" not",'q':q,'r':r,'p':p,'v':v})
+    return redirect('/')

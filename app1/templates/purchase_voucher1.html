@@ -138,13 +138,21 @@
                         </tbody>
                     </table>
                </div>  
-                <div class="row container-fluid  p-2 m-0">
-                    <div class="col-sm-2 m-0 p-0"><label>Naration</label></div>
-                </div>
-                <div class="row container-fluid  p-2 m-0">
-                    <div class="col-sm-6 m-0 p-0"><textarea class="form-control" rows="1"></textarea>
-                </div>
-            </div>
+               {% if v.voucherNarration == Yes %}
+                    <div class="row container-fluid  p-2 m-0">
+                        <div class="col-sm-2 m-0 p-0"><label>Naration</label></div>
+                    </div>
+                    <div class="row container-fluid  p-2 m-0">
+                        <div class="col-sm-6 m-0 p-0"><textarea class="form-control" rows="1"></textarea>
+                    </div>
+                {% else %}
+                    <div class="row container-fluid  p-2 m-0">
+                        <div class="col-sm-2 m-0 p-0"></div>
+                    </div>
+                    <div class="row container-fluid  p-2 m-0">
+                        <div class="col-sm-6 m-0 p-0"></div>
+                    </div>
+                {% endif %}
             </div>
         </form>
     </div>

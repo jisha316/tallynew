@@ -682,8 +682,11 @@ urlpatterns = [
     path('purchase_voucher1/<int:pk>',views.purchase_voucher1,name = 'purchase_voucher1'),
     path('pv_receipt',views.pv_receipt,name = 'pv_receipt'),
     path('pv_party',views.pv_party,name = 'pv_party'),
+    path('pv_item',views.pv_item,name = 'pv_item'),
     path('pv_receipt1/<int:pk>',views.pv_receipt1,name = 'pv_receipt1'),
     path('pv_party1/<int:pk>',views.pv_party1,name = 'pv_party1'),
+    path('create_purchasevoucher',views.create_purchasevoucher,name = 'create_purchasevoucher'),
+    path('itemdata',views.itemdata,name = 'itemdata'),
     
     
     path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),

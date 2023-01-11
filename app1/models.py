@@ -1709,3 +1709,26 @@ class purchase_voucher_party(models.Model):
     country = models.CharField(max_length = 200,null = True)
     gst_regtype = models.CharField(max_length = 200,null = True)
     gstin = models.CharField(max_length = 200,null = True)
+
+class purchase_voucher_item(models.Model):
+    company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
+    godown = models.CharField(max_length = 200,null = True)
+    quantity = models.CharField(max_length = 100,null = True)
+    rate = models.CharField(max_length = 100,null = True)
+    per = models.CharField(max_length = 100,null = True)
+    amount = models.CharField(max_length = 100,null = True)
+
+class purchasevoucher(models.Model):
+    company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
+    no = models.CharField(max_length = 10,null = True)
+    invoice_no = models.CharField(max_length = 100,null = True)
+    party_accname = models.CharField(max_length = 200,null = True)
+    purchase_ledger = models.CharField(max_length = 200,null = True)
+    date = models.DateField(null = True)
+    item_name = models.CharField(max_length = 100,null = True)
+    quantity = models.CharField(max_length = 100,null = True)
+    rate = models.CharField(max_length = 100,null = True)
+    per = models.CharField(max_length = 100,null = True)
+    amount = models.CharField(max_length = 100,null = True)
+    total = models.CharField(max_length = 100,null = True)
+    narration = models.TextField(null=True)
