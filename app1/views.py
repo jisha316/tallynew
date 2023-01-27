@@ -632,7 +632,7 @@ def create_ledger(request):
             rtype=request.POST.get('registration_type')
             gst_uin=request.POST.get('gst_uin')
             opnbn=request.POST.get('opening_blnc')
-
+            cd=request.POST.get('opening_blnc_type')
             spdl=request.POST.get('set_odl')
             achnm=request.POST.get('ac_holder_nm')
             acno=request.POST.get('acc_no')
@@ -675,7 +675,7 @@ def create_ledger(request):
                             valuation_type=valtype,rate_per_unit=rateperu,percentage_of_calcution=percalc,rond_method=rondmethod,rond_limit=roimlit,
                             gst_applicable=gstapplicbl,setalter_gstdetails=sagatdet,type_of_supply=typsupply,assessable_value=asseval,
                             appropriate_to=appropto,method_of_calculation=methcalcu,balance_billbybill=balbillbybill,credit_period=credperiod,
-                            creditdays_voucher=creditdaysvouch,company_id=t_id)
+                            creditdays_voucher=creditdaysvouch,opening_blnc_type=cd,company_id=t_id)
             
             ldr.save()
             if under =="Bank Accounts":
@@ -10990,13 +10990,19 @@ def purchase_voucher1(request,pk):
             return redirect('/')
         tally = Companies.objects.filter(id=t_id)
         vouch=Voucher.objects.get(id=pk,company=t_id)
+
+        vc  = purchasevoucher.objects.values('no').last()
+        counter = 1 if vc is None else int(vc['no']) + 1
+
         pl=tally_ledger.objects.filter(company=t_id,under='Purchase_Account')
         ac1=tally_ledger.objects.filter(company=t_id,under='Bank_Accounts')
         ac2=tally_ledger.objects.filter(company=t_id,under='Cash_in_Hand')
         ac3=tally_ledger.objects.filter(company=t_id,under='Sundry_Creditors')
         ac4=tally_ledger.objects.filter(company=t_id,under='Sundry_Debtors')
         ac5=tally_ledger.objects.filter(company=t_id,under='Branch_Divisions')
-        context = {'tally':tally,'v':vouch,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5}
+        st=stock_itemcreation.objects.filter(company=t_id)
+        gd=CreateGodown.objects.filter(comp=t_id)
+        context = {'tally':tally,'v':vouch,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5,'st':st,'gd':gd,'vc' : counter}
         return render(request,'purchase_voucher1.html',context)
     return redirect('purchase_voucher1')
 
@@ -11015,7 +11021,11 @@ def purchase_voucher(request):
         ac5=tally_ledger.objects.filter(company=t_id,under='Branch_Divisions')
         st=stock_itemcreation.objects.filter(company=t_id)
         gd=CreateGodown.objects.filter(comp=t_id)
-        context = {'tally':tally,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5,'st':st,'gd':gd}
+
+        v  = purchasevoucher.objects.values('no').last()
+        counter = 1 if v is None else int(v['no']) + 1
+
+        context = {'tally':tally,'pl':pl,'ac1':ac1,'ac2':ac2,'ac3':ac3,'ac4':ac4,'ac5':ac5,'st':st,'gd':gd,'v' : counter}
         return render(request,'purchase_voucher.html',context)
     return redirect('purchase_voucher')
 
@@ -11053,6 +11063,22 @@ def pv_party(request):
             pty.save()
 
             print("added")
+            return redirect('purchase_voucher')
+        return render(request,'purchase_voucher.html',{'tally':tally})
+    return redirect('/')
+
+def pv_item(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        if request.method == "POST":
+            pty = purchase_voucher_item(godown=request.POST['godown'], quantity=request.POST['quantity'],
+                rate=request.POST['rate'], per=request.POST['per'], amount=request.POST['amount'], 
+                company_id=t_id)
+            pty.save()
             return redirect('purchase_voucher')
         return render(request,'purchase_voucher.html',{'tally':tally})
     return redirect('/')
@@ -11097,7 +11123,7 @@ def pv_party1(request,pk):
         return render(request,'purchase_voucher1.html',{'tally':tally,'v':vouch})
     return redirect('/')
 
-def pv_item(request):
+def pv_item1(request,pk):
     if 't_id' in request.session:
         if request.session.has_key('t_id'):
             t_id = request.session['t_id']
@@ -11109,9 +11135,10 @@ def pv_item(request):
                 rate=request.POST['rate'], per=request.POST['per'], amount=request.POST['amount'], 
                 company_id=t_id)
             pty.save()
-            return redirect('purchase_voucher')
-        return render(request,'purchase_voucher.html',{'tally':tally})
+            return redirect('purchase_voucher1',pk)
+        return render(request,'purchase_voucher1.html',{'tally':tally})
     return redirect('/')
+
 
 def create_purchasevoucher(request):
     if 't_id' in request.session:
@@ -11122,6 +11149,8 @@ def create_purchasevoucher(request):
         tally = Companies.objects.filter(id=t_id)
         
         if request.method=="POST":
+            no=request.POST['pno']
+            name=request.POST['name']
             invoice_no=request.POST['invoice_no']
             party_accname=request.POST['party_accname']
             purchase_ledger=request.POST['purchase_ledger']
@@ -11134,14 +11163,34 @@ def create_purchasevoucher(request):
             # total=request.POST['total']
             narration=request.POST['narration']
 
-            pv1 = purchasevoucher(invoice_no=invoice_no, party_accname=party_accname, purchase_ledger=purchase_ledger, item_name=item_name,
+            pv1 = purchasevoucher(no=no,name=name,invoice_no=invoice_no, party_accname=party_accname, purchase_ledger=purchase_ledger, item_name=item_name,
                 date=date, quantity=quantity, rate=rate, per=per, amount=amount, narration=narration, company_id=t_id
             )
             pv1.save()
-            return redirect("purchase_voucher")
+            return redirect("list_pv")
         return render(request,'purchase_voucher.html',{'tally':tally})
     return redirect('/')
 
+def cur_balance(request):
+    i = request.GET.get('id')
+    ledger = tally_ledger.objects.values().filter(id = i)
+    data = list(ledger)
+    return JsonResponse(data, safe = False)
+    
+def legderdata(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        id = request.GET.get('id')
+
+        item = tally_ledger.objects.get(name=id,company_id=t_id)
+        q = item.opening_blnc
+        r = item.opening_blnc_type
+        return JsonResponse({"status":" not",'q':q,'r':r})
+    return redirect('/')
 
 def itemdata(request):
     if 't_id' in request.session:
@@ -11153,7 +11202,6 @@ def itemdata(request):
         id = request.GET.get('id')
 
         item = stock_itemcreation.objects.get(name=id,company_id=t_id)
-        print(item)
         q = item.quantity
         r = item.rate
         p = item.per

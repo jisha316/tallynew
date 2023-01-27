@@ -60,6 +60,20 @@
             /* max-height: 200px; */
             overflow-y: scroll;
         }  
+        .inp{
+            border: none;
+            background-color: rgba(0,0,0,.001);
+            width: 100px;
+            text-align: right;
+            
+        }
+        .inp1{
+            border: none;
+            background-color: rgba(0,0,0,.001);
+            width: 50px;
+            text-align: left;
+            
+        }
     </style>
 
     <div class="m-3">
@@ -75,12 +89,18 @@
             {% csrf_token %}
             <div class="p-3">
                 <div class="row container-fluid  p-2 m-0">
-                    <div class="col-sm-1 m-0 p-0" style="background-color: rgba(0,0,0,.4);">
-                        <center><label >Purchase</label></center>
+                    <div class="col-sm-1 m-0 p-1" style="background-color: rgba(0,0,0,.4);">
+                        <center>
+                            <label name="name">Purchase</label></center>
+                            <input type="hidden" name="name" value="Purchase">
                     </div>
                     <div class="col-sm-1 m-0 p-0"></div>
-                    <div class="col-sm-3 m-0 p-0">
-                        No.
+                    <div class="col-sm-1 m-0 p-0">
+                        No. 
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <label name="pno">{{v}}</label>
+                        <input type="hidden" value="{{v}}" name="pno">
                     </div>
                     <div class="col-sm-7 m-0 p-0"></div>
                 </div>
@@ -109,10 +129,32 @@
                 </div>
                 <div class="row container-fluid  p-2 m-0">
                     <div class="col-sm-2 m-0 p-0">
+                        <label class="text-muted">&nbsp;&nbsp; <i>Current Balance</i></label>
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <div class="d-flex">
+                            <input type="text" id="opn_blnc" class="inp text-muted">
+                            <input type="text" id="type" class="inp1 text-muted">
+                        </div>
+                    </div>
+                </div>
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-2 m-0 p-0">
                         <label>Purchase Ledger</label>
                     </div>
                     <div class="col-sm-2 m-0 p-0">
                         <input type="text" class="form-control" name="purchase_ledger" id="under" onclick="showGroup();">
+                    </div>
+                </div>
+                <div class="row container-fluid  p-2 m-0">
+                    <div class="col-sm-2 m-0 p-0">
+                        <label class="text-muted">&nbsp;&nbsp; <i>Current Balance</i></label>
+                    </div>
+                    <div class="col-sm-2 m-0 p-0">
+                        <div class="d-flex">
+                            <input type="text" id="opn_blnc1" class="inp text-muted">
+                            <input type="text" id="type1" class="inp1 text-muted">
+                        </div>
                     </div>
                 </div>
                 <div class="table-responsive-sm">
@@ -155,7 +197,7 @@
 
     <div class="form-popup ScrollStyle" id="myForm" style="background-color: #213b52">
         <form action="" class="form-container1">
-            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ldger Account</h6>
+            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ledger Account</h6>
             <button type="button" class="btn cancel close" onclick="closeForm()">X</button>
             <a href="{% url 'ledgers' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
             <hr>
@@ -163,7 +205,7 @@
                 <table>
                     <tr>
                         {% for i in pl %}
-                            <option onclick="setGroup('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#details">
+                            <option onclick="setGroup('{{i.name}}','{{i.id}}')" id="ac15" class="btns_prnt" data-toggle="modal" data-target="#details">
                                 {{i.name}}
                             </option>
                         {% endfor %}
@@ -176,7 +218,7 @@
 
     <div class="form-popup ScrollStyle" id="myForm1" style="background-color: #213b52">
         <form action="" class="form-container1" >
-            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ldger Account</h6>
+            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Ledger Account</h6>
             <button type="button" class="btn cancel close" onclick="closeForm1()">X</button>
             <a href="{% url 'ledgers' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
             <hr>
@@ -184,27 +226,27 @@
                 <table>
                     <tr>
                         {% for i in ac1 %}
-                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#party">
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" id="ac10" class="btns_prnt" data-toggle="modal" data-target="#party">
                                 {{i.name}}
                             </option>
                         {% endfor %}
                         {% for i in ac2 %}
-                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#party">
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" id="ac11" class="btns_prnt" data-toggle="modal" data-target="#party">
                                 {{i.name}}
                             </option>
                         {% endfor %}
                         {% for i in ac3 %}
-                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#party">
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" id="ac12" class="btns_prnt" data-toggle="modal" data-target="#party">
                                 {{i.name}}
                             </option>
                         {% endfor %}
                         {% for i in ac4 %}
-                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#party">
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" id="ac13" class="btns_prnt" data-toggle="modal" data-target="#party">
                                 {{i.name}}
                             </option>
                         {% endfor %}
                         {% for i in ac5 %}
-                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" class="btns_prnt" data-toggle="modal" data-target="#party">
+                            <option onclick="setGroup1('{{i.name}}','{{i.id}}')" id="ac14" class="btns_prnt" data-toggle="modal" data-target="#party">
                                 {{i.name}}
                             </option>
                         {% endfor %}
@@ -590,8 +632,8 @@
                                                     {% endfor %}
                                                 </select>
                                             </td>
-                                            <td><input type="text" name="quantity" id="quantity" class="form-control" onchange="passqty()"></td>
-                                            <td><input type="text" name="rate" id="rate" class="form-control" onchange="passrate()"></td>
+                                            <td><input type="text" name="quantity" id="quantity" class="form-control quantity" onchange="passqty()"></td>
+                                            <td><input type="text" name="rate" id="rate" class="form-control rate" onchange="passrate()"></td>
                                             <td><input type="text" name="per" id="per" class="form-control" onchange="passper()"></td>
                                             <td><input type="text" name="amount" id="amount" class="form-control" onchange="passamt()"></td>
                                         </tr>
@@ -613,10 +655,11 @@
     </div>
 
     <script>
-        $('#quantity, #rate').on('input',function(){
-            var quantity = parseFloat($('#quantity').val()) || 0;
-            var rate = parseFloat($('#rate').val()) || 0;
+        $('.quantity, .rate').on('input',function(){
+            var quantity = parseFloat($('.quantity').val()) || 0;
+            var rate = parseFloat($('.rate').val()) || 0;
             $('#amount').val(quantity * rate);    
+            $('#amount1').val(quantity * rate);    
         });
 
         $('#qty, #rate1').on('input',function(){
@@ -650,6 +693,128 @@
 
     <script>
         $(document).ready(function(){
+            $(document).on('click','#ac10',function(){
+                select = $('#ac10').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'legderdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        document.getElementById('opn_blnc').value = data
+                        document.getElementById('type').value = data1;
+                    }
+                });
+            });     
+        });
+
+        $(document).ready(function(){
+            $(document).on('click','#ac11',function(){
+                select = $('#ac11').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'legderdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        document.getElementById('opn_blnc').value = data
+                        document.getElementById('type').value = data1;
+                    }
+                });
+            });     
+        });
+
+        $(document).ready(function(){
+            $(document).on('click','#ac12',function(){
+                select = $('#ac12').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'legderdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        document.getElementById('opn_blnc').value = data
+                        document.getElementById('type').value = data1;
+                    }
+                });
+            });     
+        });
+
+        $(document).ready(function(){
+            $(document).on('click','#ac13',function(){
+                select = $('#ac13').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'legderdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        document.getElementById('opn_blnc').value = data
+                        document.getElementById('type').value = data1;
+                    }
+                });
+            });     
+        });
+
+        $(document).ready(function(){
+            $(document).on('click','#ac14',function(){
+                select = $('#ac14').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'legderdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        document.getElementById('opn_blnc').value = data
+                        document.getElementById('type').value = data1;
+                    }
+                });
+            });     
+        });
+
+        $(document).ready(function(){
+            $(document).on('click','#ac15',function(){
+                select = $('#ac15').val();
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'legderdata' %}",
+                    data: {
+                    id: select
+                    },
+                    success:function(response){
+                        console.log(response)
+                        data = response.q
+                        data1 = response.r
+                        document.getElementById('opn_blnc1').value = data
+                        document.getElementById('type1').value = data1;
+                    }
+                });
+            });     
+        });
+    </script>
+
+    <script>
+        $(document).ready(function(){
             $(document).on('click','#itm',function(){
                 select = $('#itm').val();
                 $.ajax({
@@ -665,13 +830,17 @@
                         data2 = response.p
                         data3 = response.v
                         document.getElementById('quantity').value = data
-                        document.getElementById('rate').value = data1;
+                        document.getElementById('qty').value = data
+                        document.getElementById('rate').value = data1
+                        document.getElementById('rate1').value = data1
                         document.getElementById('per').value = data2
-                        document.getElementById('amount').value=data3
+                        document.getElementById('per1').value = data2
+                        document.getElementById('amount').value = data3
+                        document.getElementById('amount1').value = data3
                     }
                 });
             });     
         });
     </script>
-  
+
 {% endblock %}

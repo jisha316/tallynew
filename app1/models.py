@@ -1720,7 +1720,8 @@ class purchase_voucher_item(models.Model):
 
 class purchasevoucher(models.Model):
     company = models.ForeignKey(Companies,on_delete = models.CASCADE,null = True)
-    no = models.CharField(max_length = 10,null = True)
+    name = models.CharField(max_length = 100,null = True)
+    no = models.IntegerField(null = True)
     invoice_no = models.CharField(max_length = 100,null = True)
     party_accname = models.CharField(max_length = 200,null = True)
     purchase_ledger = models.CharField(max_length = 200,null = True)

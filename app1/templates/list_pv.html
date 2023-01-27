@@ -2,32 +2,49 @@
     {% block body %}
     {% load static %}
     <style>
-        .card {
-          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-          max-width: 300px;
-          margin: auto;
-          text-align: right;
-          font-family: arial;
-        }
-        .modal-body{
-            color: #fff;
-            background-color: #213b52;
-            max-width: 400px;
-            margin: auto;
-            text-align: center;
-            font-family: arial;
-        }
-        .modal-content{
-            margin-top: 250px;
-            background-color: #213b52;
-        }
-        a{
-            margin-right: 10px;
-            margin-left: 10px;
-        }
-        .btns{
-            color: black;
+        .enter{
+            display: flex;
+            align-items: center;
+            justify-content: center;   
+        }  
+        .hide{
+			display: none;
+    	}
+        .close {
+            position: absolute;
+            top: 3px;
+            right: 8px;
+            font-size: 17px;
+            transform: rotate(0deg);
+            color: rgb(255, 255, 255);
+            cursor: pointer;
             text-decoration: none;
+        }
+        .form-popup {
+            display: none;
+            position: fixed;
+            top: 270px;
+            right: 550px;
+            border: 1px solid #f1f1f1;
+            z-index: 9;
+            width: 300px;
+            height: 400px;
+        }
+        .content a:hover {
+            background-color: rgb(238, 167, 75);
+        }
+        .form-container {
+            max-width: 50px;
+            height: 500px;
+            padding: 10px;
+        }
+        .form-container1 {
+            max-width: 350px;
+            height: 600px;
+            padding: 2px; 
+        }
+        .bt{
+            text-align: end;
         }
         .btns_prnt{
             width: 100%;
@@ -38,31 +55,75 @@
         .btns_prnt:hover{
             background-color:#5bc9e4;
             color: rgb(15, 14, 14);
-        }
+        } 
+        .ScrollStyle{
+            overflow-y: scroll;
+        } 
     </style> 
-    
-    <div class="m2">
-        <form class="p-2">
-            <div class="p-3">
-                <div class="card">
-                    <h6  class="bg-info text-light p-0 m-0 text-left">List Of Types</h6><br>
-                    <h6  class="text-light p-1 m-0 text-end btns_prnt"><a href="{% url 'vouchers' %}" class="">Create</a></h6>
-                    <hr>
-                    <table>
-                        {% for i in vt %}
-                            <tr>
-                                <h6 class="text-light p-1 m-0 text-center btns_prnt"><a href="{% url 'purchase_voucher1' i.id %}">{{ i.voucher_name }}</a></h6>
-                            </tr>
-                        {% endfor %}
-         
-                        <tr class="btns_prnt">
-                            <h6  class="text-light p-1 m-0 text-center btns_prnt"><a href="{% url 'purchase_voucher' %}" class="">Purchase</a></h6>
-                        </tr>
-                    </table>  
-                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <div class="m-0">
+        <div class="row container-fluid  p-2 m-0">
+            <div class="col-sm-3 m-0 p-0"></div>  
+            <div class="col-sm-6 m-0 p-0">
+                <div class="row bg-info  p-2 m-0" style="background-color: rgba(33,57,77,255);color:#fff;">
+                    <div class="col-md-6"> Voucher Types</div>
+                </div>
+                <div class="row container-fluid center  p-2 m-0" style="background-color:rgba(0,0,0,.4);">
+                    <div class="col-sm-2 m-0 p-0"></div>
+                    <div class="col-sm-2 mt-3 p-0">
+                        <label>Name</label>
+                    </div>
+                    <div class="col-sm-5 mt-2 p-0"> 
+                        <input type="text" class="form-control" value="Purchase" id="list" onclick="showlist();"><br><br>
+                    </div>
                 </div>   
-            </div>   
+            </div>
+        </div>
+    </div>
+
+    <div class="form-popup ScrollStyle" id="myForm" style="background-color: #213b52">
+        <form action="" class="form-container1">
+            <h6 style="background-color:rgb(17, 169, 240) ;color:white">List of Types</h6>
+            <button type="button" class="btn cancel close" onclick="closeForm()">X</button>
+            <a href="{% url 'vouchers' %}" style="cursor:pointer" class="btn bt btns_prnt" role="button">Create</a>  
+            <hr>
+            <div>
+                <table>
+                    {% for i in vt %}
+                        <tr>
+                            <h6>
+                                <a href="{% url 'purchase_voucher1' i.id %}">
+                                    <option onclick="setGroup('{{i.voucher_name}}','{{i.id}}')" class="btns_prnt">{{ i.voucher_name }}</option>
+                                </a>
+                            </h6>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <h6>
+                            <a href="{% url 'purchase_voucher' %}">
+                                <option onclick="setGroup('Purchase')" class="btns_prnt">Purchase</option>
+                            </a>
+                        </h6>
+                    </tr>
+                </table>
+            </div>
+            <input type="text" name="listhidden" hidden value="{{i.id}}">
         </form>
-    </div>  
+    </div>
+
+    <script>
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+        function showlist(){
+            document.getElementById('myForm').style.visibility= "visible";
+            document.getElementById("myForm").style.display = "block";
+        }
+        function setGroup(list,listId){
+                document.getElementById('list').value= list;
+                document.getElementById('myForm').style.visibility= "hidden";
+                document.getElementsByName('listhidden').value= listId;
+            }
+    </script>
 
 {% endblock %}

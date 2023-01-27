@@ -685,7 +685,9 @@ urlpatterns = [
     path('pv_item',views.pv_item,name = 'pv_item'),
     path('pv_receipt1/<int:pk>',views.pv_receipt1,name = 'pv_receipt1'),
     path('pv_party1/<int:pk>',views.pv_party1,name = 'pv_party1'),
+    path('pv_item1/<int:pk>',views.pv_item1,name = 'pv_item1'),
     path('create_purchasevoucher',views.create_purchasevoucher,name = 'create_purchasevoucher'),
+    path('legderdata',views.legderdata,name = 'legderdata'),
     path('itemdata',views.itemdata,name = 'itemdata'),
     
     
